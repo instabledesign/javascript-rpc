@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="../../lib/jquery/dist/jquery.min.js"></script>
+    <script src="../lib/q/q.js"></script>
+    <script src="../src/main.js"></script>
+    <script src="../src/rpc/client.js"></script>
+    <script src="../src/rpc/implementation.js"></script>
+    <script src="../src/rpc/method/method-call.js"></script>
+    <script src="../src/rpc/method/method-response.js"></script>
+    <script src="../src/rpc/method/method-fault.js"></script>
+    <script src="../src/rpc/method/method-return.js"></script>
+    <script src="../src/rpc/transport/transport.js"></script>
+    <script src="../src/rpc/transport/transport-ajax.js"></script>
+    <script src="../src/jsonrpc/client.js"></script>
+    <script src="../src/jsonrpc/implementation.js"></script>
+</head>
+<body>
+<script type="application/javascript">
+    var transport = new TransportAjax({
+        open: {
+            method: 'POST',
+            url: 'http://localhost:8080/jsonrpc'
+        },
+        headers: {
+            'Content-type': 'application/json'
+        }
+    });
+
+    var client = new JsonClient('', transport);
+    client
+        .call('JSONRPC.Version', null, 1)
+        .then(function(data){
+            console.log('response', data);
+        })
+        .fail(function(e){
+            console.warn('error', e);
+        });
+
+//    var socket = new WebSocket('ws://localhost:9090');
+//
+//    socket.onmessage = function(event) {
+//        console.log(event);
+//    };
+//
+//    socket.onopen = function() {
+//        socket.send(JSON.stringify(request));
+//    };
+//
+//    $(function() {
+//        $.ajax({
+//            url: 'http://localhost:8080/jsonrpc',
+//            method: "POST",
+//            contentType: 'application/json',
+//            data: JSON.stringify(request)
+//        }).done(function(event){
+//            console.log(event);
+//        });
+//
+//    });
+
+//var xhr_object = null;
+//
+//// ### Construction de l’objet XMLHttpRequest selon le type de navigateur
+//if(window.XMLHttpRequest)
+//    xhr_object = new XMLHttpRequest();
+//else if(window.ActiveXObject)
+//    xhr_object = new ActiveXObject("Microsoft.XMLHTTP");
+//else {
+//    // XMLHttpRequest non supporté par le navigateur
+//    alert("Votre navigateur ne supporte pas les objets XMLHTTPRequest...");
+////    return;
+//}
+//
+//xhr_object.open("POST", 'http://localhost:8080/jsonrpc', true);
+//
+////  Définition du comportement à adopter sur le changement d’état de l’objet XMLHttpRequest
+//xhr_object.onreadystatechange = function() {
+//    if(xhr_object.readyState == 4) {
+//        console.log(xhr_object.status); // DEBUG MODE
+//        //document.write(xhr_object.responseText);
+////        eval(xhr_object.responseText);
+//    }
+//
+//    return xhr_object.readyState;
+//};
+//xhr_object.setRequestHeader("Content-type", "application/json");
+//
+////  Envoi de la requête
+//xhr_object.send(JSON.stringify(request));
+</script>
+</body>
+</html>
