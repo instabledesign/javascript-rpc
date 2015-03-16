@@ -6,6 +6,10 @@
     <script src="../../lib/jquery/dist/jquery.min.js"></script>
     <script src="../lib/q/q.js"></script>
     <script src="../src/main.js"></script>
+    <script src="../src/exception/exception.js"></script>
+    <script src="../src/exception/fault.js"></script>
+    <script src="../src/exception/invalid-json-rpc.js"></script>
+    <script src="../src/exception/invalid-argument-exception.js"></script>
     <script src="../src/rpc/client.js"></script>
     <script src="../src/rpc/implementation.js"></script>
     <script src="../src/rpc/method/method-call.js"></script>
@@ -33,10 +37,10 @@
     client
         .call('JSONRPC.Version', null, 1)
         .then(function(data){
-            console.log('response', data);
+            console.log(data);
         })
         .fail(function(e){
-            console.warn('error', e);
+            console.error(e);
         });
 
 //    var socket = new WebSocket('ws://localhost:9090');
