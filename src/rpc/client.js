@@ -1,15 +1,13 @@
-var Client;
-Client = (function () {
-    function Client(url, implementation, transport) {
+var Client = (function () {
+    function Client(implementation, transport) {
         if (!(implementation instanceof Implementation)) throw new InvalidArgumentException(implementation, 'Implementation');
         if (!(transport instanceof Transport)) throw new InvalidArgumentException(transport, 'Transport');
 
-        this.url = url;
         this.implementation = implementation;
         this.transport = transport;
     }
 
-    Client.prototype.call = function (methodName, parameters, id, options) {
+    Client.prototype.call = function (methodName, parameters, id) {
         var _this = this;
         var defer = Q.defer();
         try {
@@ -17,7 +15,7 @@ Client = (function () {
             var request = _this.implementation.createRequest(methodCall);
 
             _this.transport
-                .send(request, options).then(function (response) {
+                .send(request).then(function (response) {
                     var methodResponse = _this.implementation.createMethodResponse(response);
                     if (methodResponse instanceof MethodFault) {
                         defer.reject(methodResponse);
