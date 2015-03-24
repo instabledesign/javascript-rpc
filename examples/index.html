@@ -24,7 +24,7 @@
 </head>
 <body>
 <script type="application/javascript">
-    var transport = new TransportAjax({
+    var transportAjax = new TransportAjax({
         open: {
             method: 'POST',
             url: 'http://localhost:8080/jsonrpc'
@@ -34,8 +34,8 @@
         }
     });
 
-    var client = new JsonClient('', transport);
-    client
+    var clientWithAjax = new JsonClient(transportAjax);
+    clientWithAjax
         .call('JSONRPC.Version', null, 1)
         .then(function(data){
             console.log(data);

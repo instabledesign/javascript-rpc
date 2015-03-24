@@ -3,9 +3,19 @@ var TransportAjax = (function(parent) {
 
     function TransportAjax(options) {
         this.xhr_object = null;
+
+        if(window.XMLHttpRequest) {
+            this.xhr_object = new XMLHttpRequest();
+        }
+        else if(window.ActiveXObject) {
+            this.xhr_object = new ActiveXObject('Microsoft.XMLHTTP');
+        }
+        else {
+            throw new Exception('Browser not support XMLHTTPRequest.');
+        }
+
         this.options = {
-            postOpen: [],
-            preSend: [],
+            preSend: function(){},
             open: {
                 method: null,
                 url: '',
@@ -17,55 +27,12 @@ var TransportAjax = (function(parent) {
         };
         merge(this.options, options);
 
-        if(window.XMLHttpRequest) {
-            this.xhr_object = new XMLHttpRequest();
-        }
-        else if(window.ActiveXObject) {
-            this.xhr_object = new ActiveXObject('Microsoft.XMLHTTP');
-        }
-        else {
-            throw 'Browser not support XMLHTTPRequest...';
-        }
+        this.xhr_object.open.apply(this.xhr_object, ObjectToArray(this.options.open));
     }
 
-    TransportAjax.prototype.postOpen = function() {
-        var _this = this;
-
-        if (_this.options.postOpen.constructor !== Array) {
-            throw 'postOpen must be an array of callback';
-        }
-        for (var i in _this.options.postOpen) {
-            if (!_this.options.postOpen[i] instanceof Function) {
-                throw 'postOpen can contain only function type';
-            }
-
-            _this.options.postOpen[i].call(_this.xhr_object);
-        }
-    };
-
-    TransportAjax.prototype.preSend = function() {
-        var _this = this;
-
-        if (_this.options.preSend.constructor !== Array) {
-            throw 'preSend must be an array of callback';
-        }
-        for (var j in _this.options.preSend) {
-            if (!_this.options.preSend[j] instanceof Function) {
-                throw 'preSend can contain only function type';
-            }
-
-            _this.options.preSend[j].call(_this.xhr_object);
-        }
-    };
-
-    TransportAjax.prototype.send = function(data, options) {
+    TransportAjax.prototype.send = function(data) {
         var _this = this;
         var defer = Q.defer();
-
-        merge(_this.options, options);
-
-        _this.xhr_object.open.apply(_this.xhr_object, ObjectToArray(_this.options.open));
-        _this.postOpen();
 
         _this.xhr_object.onreadystatechange = function() {
             if(_this.xhr_object.readyState == 1) {
@@ -91,7 +58,7 @@ var TransportAjax = (function(parent) {
             _this.xhr_object.setRequestHeader(name, _this.options.headers[name]);
         }
 
-        _this.preSend();
+        _this.options.preSend.call(_this.xhr_object, data, defer);
         _this.xhr_object.send(data);
 
         return defer.promise;
